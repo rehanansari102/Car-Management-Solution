@@ -106,7 +106,7 @@ const AddCarForm: React.FC = () => {
         ))}
       </TextField>
 
-      <Button type="submit" variant="contained" color="primary">
+      <Button sx={{mt:2}} type="submit" variant="contained" color="primary">
         Add Car
       </Button>
     </form>
