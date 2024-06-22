@@ -64,7 +64,7 @@ This project is a Car Management System built using the MERN stack (MongoDB, Exp
 5. **Start the backend server**
 
     ```bash
-    npm start
+    node app.js
     ```
 
 6. **API Documentation**
