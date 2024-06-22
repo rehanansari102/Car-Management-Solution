@@ -3,13 +3,16 @@
 import React from 'react';
 import AddCategoryForm from '../../../components/addCategoryForm';
 import { Container } from '@mui/material';
+import MainHeader from '@/components/header';
+import withAuth from '@/utils/withAuth';
 
 const AddCategoryPage: React.FC = () => {
   return (
-    <Container maxWidth="sm">
+    <Container>
+        <MainHeader/>
       <AddCategoryForm />
     </Container>
   );
 };
 
-export default AddCategoryPage;
+export default withAuth(AddCategoryPage);

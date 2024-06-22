@@ -1,3 +1,19 @@
 .text-white{
   color: white;
 }
+.back-icon{
+  position: relative;
+  top:-5px;  
+  margin-right: 10px;
+}
+.back-icon svg{
+  fill:#000;
+  font-size: 2rem !important;
+  margin-right: 20px;
+}
+.MuiDataGrid-columnHeaderTitle{
+  font-weight: 700;
+}
+.MuiDataGrid-menuIcon{
+  display: none !important;
+}

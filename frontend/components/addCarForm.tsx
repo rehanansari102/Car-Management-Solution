@@ -1,36 +1,52 @@
 // components/AddCarForm.tsx
 
-import React from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import axios from 'axios';
-import { useRouter } from 'next/navigation';
-import { TextField, Button, MenuItem, Typography } from '@mui/material';
-
+import React, { useEffect, useState } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { TextField, Button, MenuItem, Typography } from "@mui/material";
+import { post,get } from '../utils/api';
 interface IFormInput {
-  category: string;
+  categoryId: string;
   color: string;
   model: string;
   make: string;
   registrationNo: string;
 }
-
-const categories = [
-  'Bus',
-  'Sedan',
-  'SUV',
-  'Hatchback'
-];
+interface Category {
+  _id: string;
+  name: string;
+}
 
 const AddCarForm: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
-  const router = useRouter();
 
-  const onSubmit: SubmitHandler<IFormInput> = async data => {
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      await axios.post(`${baseUrl}/api/cars`, data);
-      router.push('/cars');
-    } catch (error) {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>();
+  const router = useRouter();
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {       
+        const categoriesdata = await get(`/api/categories`);
+        setCategories(categoriesdata.data);
+      } catch (error: any) {
+        console.error(error);        
+      }
+    };
+
+    fetchCategories();
+    // fetchCar();
+  }, []);
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    try {   
+     
+      await post(`/api/cars`, data);
+      router.push("/cars");
+    } catch (error: any) {
       console.error(error);
     }
   };
@@ -42,7 +58,7 @@ const AddCarForm: React.FC = () => {
       </Typography>
       <TextField
         label="Make"
-        {...register('make', { required: 'Make is required' })}
+        {...register("make", { required: "Make is required" })}
         error={!!errors.make}
         helperText={errors.make?.message}
         fullWidth
@@ -50,7 +66,7 @@ const AddCarForm: React.FC = () => {
       />
       <TextField
         label="Model"
-        {...register('model', { required: 'Model is required' })}
+        {...register("model", { required: "Model is required" })}
         error={!!errors.model}
         helperText={errors.model?.message}
         fullWidth
@@ -58,35 +74,38 @@ const AddCarForm: React.FC = () => {
       />
       <TextField
         label="Color"
-        {...register('color', { required: 'Color is required' })}
+        {...register("color", { required: "Color is required" })}
         error={!!errors.color}
         helperText={errors.color?.message}
         fullWidth
         margin="normal"
       />
       <TextField
-        select
-        label="Category"
-        {...register('category', { required: 'Category is required' })}
-        error={!!errors.category}
-        helperText={errors.category?.message}
-        fullWidth
-        margin="normal"
-      >
-        {categories.map(category => (
-          <MenuItem key={category} value={category}>
-            {category}
-          </MenuItem>
-        ))}
-      </TextField>
-      <TextField
         label="Registration No"
-        {...register('registrationNo', { required: 'Registration number is required' })}
+        {...register("registrationNo", {
+          required: "Registration number is required",
+        })}
         error={!!errors.registrationNo}
         helperText={errors.registrationNo?.message}
         fullWidth
         margin="normal"
       />
+      <TextField
+        select
+        label="Category"
+        {...register("categoryId", { required: "Category is required" })}
+        error={!!errors.categoryId}
+        helperText={errors.categoryId?.message}
+        fullWidth
+        margin="normal"
+      >
+        {categories.map((category: { _id: string; name: string }) => (
+          <MenuItem key={category._id} value={category._id}>
+            {category.name}
+          </MenuItem>
+        ))}
+      </TextField>
+
       <Button type="submit" variant="contained" color="primary">
         Add Car
       </Button>

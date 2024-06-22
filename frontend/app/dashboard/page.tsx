@@ -4,6 +4,8 @@ import axios from "axios";
 import { Container, Typography, Button, Box } from "@mui/material";
 import withAuth from "../../utils/withAuth";
 import { useRouter } from "next/navigation";
+import MainHeader from "@/components/header";
+import { get } from '../../utils/api';
 interface Car {
   _id: string;
   category: string;
@@ -17,45 +19,23 @@ const Dashboard: React.FC = () => {
   const [cars, setCars] = useState<Car[]>([]);
   const router = useRouter();
   useEffect(() => {
-    const fetchCars = async () => {
-      const token = localStorage.getItem("token");
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const fetchCars = async () => {    
+    
       try {
-        const response = await axios.get(baseUrl + "/api/cars", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await get("/api/cars");
         setCars(response.data);
-      } catch (error) {
-        console.error(error);
-        // Redirect to sign in page if error occurs
-        // window.location.href = '/auth/signin';
+      } catch (error : any) {
+        console.log(error)
       }
     };
 
     fetchCars();
   }, []);
-  const logout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/auth/signin";
-  };
+ 
   return (
     <Container>
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={2}
-      >
-        <Typography variant="h4" gutterBottom>
-          Dashboard
-        </Typography>
-        <Button onClick={logout} variant="contained" color="error">
-          Logout
-        </Button>
-      </Box>
-
+     
+       <MainHeader/>
       <Typography variant="h6">
         Number of registered cars: {cars.length}
       </Typography>

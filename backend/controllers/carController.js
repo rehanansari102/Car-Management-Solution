@@ -1,14 +1,16 @@
 const Car = require('../models/Car');
 
 exports.createCar = async (req, res) => {
-    const { category, color, model, make, registrationNo } = req.body;
+    const { categoryId, color, model, make, registrationNo,user } = req.body;
     try {
+
         let car = new Car({
-            category,
+            categoryId,
             color,
             model,
             make,
             registrationNo,
+            userId:user?.id
         });
         await car.save();
         res.status(201).json(car);
@@ -17,10 +19,26 @@ exports.createCar = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
-
-exports.getCars = async (req, res) => {
+exports.getCarById = async (req, res) => {
+    const { id } = req.params;
+  
     try {
-        const cars = await Car.find().populate('category');
+      const car = await Car.findById(id);
+  
+      if (!car) {
+        return res.status(404).json({ msg: 'Car not found' });
+      }
+  
+      res.json(car);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  };
+exports.getCars = async (req, res) => {
+    const {user } = req.body;
+    try {
+        const cars = await Car.find({ userId: user?.id }).sort({ createdAt: -1 });
         res.json(cars);
     } catch (err) {
         console.error(err.message);
@@ -30,13 +48,15 @@ exports.getCars = async (req, res) => {
 
 exports.updateCar = async (req, res) => {
     const { id } = req.params;
-    const { category, color, model, make, registrationNo } = req.body;
+    const { category, color, model, make, registrationNo,user } = req.body;
+    console.log(user);
     try {
         let car = await Car.findById(id);
         if (!car) {
             return res.status(404).json({ msg: 'Car not found' });
         }
-        car.category = category;
+        car.categoryId = category;
+        car.userId  = user?.id
         car.color = color;
         car.model = model;
         car.make = make;
@@ -51,15 +71,19 @@ exports.updateCar = async (req, res) => {
 
 exports.deleteCar = async (req, res) => {
     const { id } = req.params;
+
     try {
-        let car = await Car.findById(id);
-        if (!car) {
-            return res.status(404).json({ msg: 'Car not found' });
-        }
-        await car.remove();
-        res.json({ msg: 'Car removed' });
+      const car = await Car.findById(id);
+  
+      if (!car) {
+        return res.status(404).json({ msg: 'Car not found' });
+      }
+  
+      await Car.deleteOne({ _id: id });
+  
+      res.json({ msg: 'Car removed' });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+      console.error(err.message);
+      res.status(500).send('Server error');
     }
 };

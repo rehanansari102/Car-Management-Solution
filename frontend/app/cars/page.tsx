@@ -6,47 +6,26 @@ import withAuth from "../../utils/withAuth";
 import Link from "next/link";
 import ListCars from "../../components/carList";
 import { useRouter } from "next/navigation";
-interface Car {
-  _id: string;
-  category: string;
-  color: string;
-  model: string;
-  make: string;
-  registrationNo: string;
-}
+import MainHeader from "@/components/header";
+
 
 const Dashboard: React.FC = () => {
-  const [cars, setCars] = useState<Car[]>([]);
   const router = useRouter();
-  useEffect(() => {
-    const fetchCars = async () => {
-      const token = localStorage.getItem("token");
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      try {
-        const response = await axios.get(baseUrl + "/api/cars", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setCars(response.data);
-      } catch (error) {
-        console.error(error);
-        // Redirect to sign in page if error occurs
-        // window.location.href = '/auth/signin';
-      }
-    };
-
-    fetchCars();
-  }, []);
-  const logout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/auth/signin";
-  };
   return (
-    <Container>
-   
-
+    <Container>  
+  <MainHeader/>
+  
       <Box sx={{ mt: 4 }}>
+      <Button
+        variant="contained"
+        sx={{ mb: 3 }}
+        color="primary"
+        onClick={(e) => {
+          router.push("/cars/add");
+        }}
+      >
+        Add a Car
+      </Button>
         <ListCars />
       </Box>
     </Container>

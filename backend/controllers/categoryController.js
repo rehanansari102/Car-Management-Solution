@@ -14,7 +14,10 @@ exports.createCategory = async (req, res) => {
 
 exports.getCategories = async (req, res) => {
     try {
-        const categories = await Category.find();
+        const { user } = req.body;
+        const userId =(user.id);
+        const categories = await Category.find({"userId" : userId});
+        console.log(categories);
         res.json(categories);
     } catch (err) {
         console.error(err.message);
@@ -38,7 +41,22 @@ exports.updateCategory = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
-
+exports.getCategoryById = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const category = await Category.findById(id);
+  
+      if (!category) {
+        return res.status(404).json({ msg: 'Car not found' });
+      }
+  
+      res.json(category);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send('Server error');
+    }
+  };
 exports.deleteCategory = async (req, res) => {
     const { id } = req.params;
     try {
@@ -46,7 +64,7 @@ exports.deleteCategory = async (req, res) => {
         if (!category) {
             return res.status(404).json({ msg: 'Category not found' });
         }
-        await category.remove();
+        await category.deleteOne({ _id: id });
         res.json({ msg: 'Category removed' });
     } catch (err) {
         console.error(err.message);

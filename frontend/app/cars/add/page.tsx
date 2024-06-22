@@ -3,13 +3,16 @@
 import React from 'react';
 import AddCarForm from '../../../components/addCarForm';
 import { Container } from '@mui/material';
+import MainHeader from '@/components/header';
+import withAuth from '../../../utils/withAuth';
 
 const AddCarPage: React.FC = () => {
   return (
-    <Container maxWidth="sm">
+    <Container>
+        <MainHeader/>
       <AddCarForm />
     </Container>
   );
 };
 
-export default AddCarPage;
+export default withAuth(AddCarPage);

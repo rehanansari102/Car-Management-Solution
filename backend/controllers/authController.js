@@ -34,7 +34,7 @@ exports.signup = async (req, res) => {
             },
         };
 
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '24h' });
 
         res.status(201).json({ token });
     } catch (err) {
@@ -67,7 +67,7 @@ exports.signin = async (req, res) => {
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
-            { expiresIn: '1h' },
+            { expiresIn: '24h' },
             (err, token) => {
                 if (err) throw err;
                 res.json({ token });

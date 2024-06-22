@@ -1,7 +1,6 @@
 // components/CategoryList.tsx
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import {
   Button,
@@ -15,21 +14,16 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useRouter } from "next/navigation";
-
+import { get,del } from '../utils/api';
 interface Category {
   id: string;
   name: string;
 }
 
-const generateDummyCategories = (count: number): Category[] => {
-  const categories = [];
-  for (let i = 1; i <= count; i++) {
-    categories.push({ id: `${i}`, name: `Category ${i}` });
-  }
-  return categories;
-};
+
 
 const CategoryList: React.FC = () => {
+ 
   const [categories, setCategories] = useState<Category[]>([]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState<boolean>(false);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
@@ -39,12 +33,18 @@ const CategoryList: React.FC = () => {
     const fetchCategories = async () => {
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-        const response = await axios.get(`${baseUrl}/api/categories`);
-        setCategories(response.data);
-      } catch (error) {
+        const response = await get(`/api/categories`);
+        const modifiedData = response.data.map((category: any) => {
+      
+          return {
+            id: category._id,
+            name: category.name,           
+          } as Category;
+        });
+        setCategories(modifiedData);
+      } catch (error : any) {
         console.error(error);
-        // Use dummy data if API call fails
-        setCategories(generateDummyCategories(20));
+       
       }
     };
 
@@ -62,9 +62,8 @@ const CategoryList: React.FC = () => {
   };
 
   const deleteCategory = async (id: string) => {
-    try {
-      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
-      await axios.delete(`${baseUrl}/api/categories/${id}`);
+    try {     
+      await del(`/api/categories/${id}`);
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category.id !== id)
       );
@@ -99,7 +98,7 @@ const CategoryList: React.FC = () => {
 
   return (
     <>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h5" gutterBottom>
         Categories List
       </Typography>
       <Button
