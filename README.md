@@ -19,7 +19,7 @@ This project is a Car Management System built using the MERN stack (MongoDB, Exp
 - Backend: Node.js, Express, MongoDB
 - Authentication: JWT (JSON Web Tokens)
 - API Documentation: Swagger
-- Email Service: Nodemailer (or any preferred email service)
+- Email Service: Amazon ses (or any preferred email service)
 
 ## Prerequisites
 
