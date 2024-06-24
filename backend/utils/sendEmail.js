@@ -2,12 +2,12 @@ const nodemailer = require('nodemailer');
 
 const sendEmail = async (to, subject, text) => {
     const transporter = nodemailer.createTransport({
-        host: "email-smtp.us-east-2.amazonaws.com",
+        host: "",
         port: 465,
         secure: true,
         auth: {
-          user: "AKIA354M5YKOHLVTRG7K",
-          pass: "BGJSDkwq1EQBDplWH+XHqSNdcvdcRxSn4R45z3FPot2v",
+          user: "",
+          pass: "",
         },
       });
 
